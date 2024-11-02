@@ -8,7 +8,7 @@ import argparse
 
 
 def approx_nearest_neighbor(matrix, file_name, f=150, n_trees=500):
-    # similar to cosine similarity
+    # creating annoy index
     t = AnnoyIndex(f, "angular")
     for i in range(matrix.shape[0]):
         t.add_item(i, matrix[i])
@@ -41,7 +41,8 @@ def create_mappings(df):
 
 
 def write_mappings(mappings):
-    dirpath = Path("/mappings")  # mounted path
+    # mounted path
+    dirpath = Path("/mappings") 
     dirpath.mkdir(exist_ok=True)
     for key, value in mappings.items():
         file_dest = dirpath / f"{key}.pkl"
