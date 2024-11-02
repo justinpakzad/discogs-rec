@@ -1,0 +1,8 @@
+uvicorn==0.30.5
+annoy==1.17.3
+fastapi==0.112.0
+fastapi-cli==0.0.5
+playwright==1.34.0
+playwright-stealth==1.0.6
+pydantic==2.8.2
+streamlit==1.37.1

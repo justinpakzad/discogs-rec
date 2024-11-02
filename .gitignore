@@ -1,0 +1,10 @@
+**/__pycache__/
+notebooks/
+src/sql.py
+.env
+discogs_enriched_data/
+.python-version
+.DS_Store   
+mappings_and_annfiles
+src/config
+discogs_rec_dataset.csv

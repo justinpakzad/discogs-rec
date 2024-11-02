@@ -1,0 +1,23 @@
+services:
+  discogs_rec:
+      build: src/
+      volumes:
+        - ./src/data:/data
+        - ./app/mappings:/mappings
+        - ./app/ann_files:/ann_files
+        - ./src:/src
+      environment:
+        PYTHONPATH: /src
+      command: ["python", "main.py"]
+  fast_api:
+    build: app/
+    ports:
+      - "8000:8000"
+      - "8501:8501"
+    volumes:
+      - ./app/fast_api:/app/fast_api
+      - ./app/streamlit:/app/streamlit
+      - ./app/mappings:/app/mappings
+      - ./app/ann_files:/app/ann_files
+    environment:
+      PYTHONPATH: /app
