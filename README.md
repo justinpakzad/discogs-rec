@@ -12,7 +12,7 @@ Discogs Rec is a recommender system that utilizes Spotify's [Annoy](https://gith
 
 2. Clone the repository:
 ```bash
-git clone my_repo
+git clone https://github.com/justinpakzad/discogs-rec
 ```
 
 ## Docker Configuration
