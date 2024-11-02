@@ -38,8 +38,7 @@ docker compose up fast_api --build
 ```
 
 
-
-
-
-# Streamlit App Example
+## Streamlit App Example
 ![Alt text](images/demo.png)
+
+
