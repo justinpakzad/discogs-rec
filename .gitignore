@@ -7,4 +7,4 @@ discogs_enriched_data/
 .DS_Store   
 mappings_and_annfiles
 src/config
-discogs_rec_dataset.csv
+test_files
