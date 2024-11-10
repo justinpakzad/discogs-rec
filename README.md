@@ -18,7 +18,7 @@ git clone https://github.com/justinpakzad/discogs-rec
 
 The `docker-compose.yaml` file configures two main services: `discogs_rec` for pre processing the data, generating the Annoy index, and data mappings.`fast_api` for the API and Streamlit components.
 
-Shared volumes are configured for directories like `app/mappings`, `app/ann_files`, and `src/data`, so that each service has access to necessary files without duplication.
+Shared volumes are configured for directories like `app/mappings`, `app/ann_files`, and `/data`, so that each service has access to necessary files without duplication.
 
 Please note, in order to run the discogs_rec container, you will need at least 8gb of RAM.
 ### Docker Commands for Building and Running Services Locally
