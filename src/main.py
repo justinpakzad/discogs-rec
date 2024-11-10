@@ -7,7 +7,7 @@ from preprocessor import BuildFeatures
 import argparse
 
 
-def approx_nearest_neighbor(matrix, file_name, f=150, n_trees=500):
+def approx_nearest_neighbor(matrix, file_name, f=150, n_trees=250):
     # creating annoy index
     t = AnnoyIndex(f, "angular")
     for i in range(matrix.shape[0]):
@@ -42,7 +42,7 @@ def create_mappings(df):
 
 def write_mappings(mappings):
     # mounted path
-    dirpath = Path("/mappings") 
+    dirpath = Path("/mappings")
     dirpath.mkdir(exist_ok=True)
     for key, value in mappings.items():
         file_dest = dirpath / f"{key}.pkl"
@@ -66,6 +66,7 @@ def arg_parse():
 
 def main():
     data_path = Path("/data")  # mounted
+    config_path = Path("/config")  # mounted
     df = pd.read_csv(f"{data_path}/discogs_rec_dataset.csv")
     df_cleaned = df.drop_duplicates(
         subset=["release_title", "label_name", "release_year", "catno"], keep="first"
@@ -74,9 +75,13 @@ def main():
     feature_builder = BuildFeatures(features=args.features)
     feature_matrix = feature_builder.process_features(df_cleaned, args.features)
     reduced_features = feature_builder.reduce_dimensionality(feature_matrix)
+    n_components = reduced_features.shape[1]
+    feature_builder.write_n_components(n_components)
     mappings = create_mappings(df_cleaned)
     write_mappings(mappings)
-    approx_nearest_neighbor(reduced_features, file_name="discogs_rec.ann")
+    approx_nearest_neighbor(
+        reduced_features, f=n_components, file_name="discogs_rec.ann"
+    )
 
 
 if __name__ == "__main__":

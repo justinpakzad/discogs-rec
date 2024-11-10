@@ -24,6 +24,7 @@ def call_rec_api(discogs_url):
 
 
 st.title("Discogs Rec")
+
 st.markdown(
     """
     <style>
@@ -32,16 +33,18 @@ st.markdown(
             font-weight:bold;
             color: white;
             text-shadow: 2px 2px 5px grey;
-            margin-bottom: 20px;  /* Add bottom margin for spacing */
+            margin-bottom: 20px;
         }
     </style>
     <div class="custom-font">
-        Discogs Rec uses the Approximate Nearest Neighbors algorithm to recommend records based on features extracted from the Discogs data dumps, as well as enriched features extracted via web scraping. The model is trained only on electronic music.
+        Discogs Rec uses the Approximate Nearest Neighbors algorithm to recommend
+        records based on features extracted from the Discogs data dumps, as well as
+        enriched features extracted via web scraping. The model is trained only on
+        electronic music.
     </div>
     """,
     unsafe_allow_html=True,
 )
-
 
 url = st.text_input(
     "Enter a Discogs URL", placeholder="https://www.discogs.com/release/123456"
@@ -59,5 +62,7 @@ if url:
             st.error("Sorry, the release is not in the scope of our model.")
     else:
         st.error(
-            "Invalid URL, please make sure it takes the form https://www.discogs.com/release/<release_id>"
+            "Invalid URL, \
+            please make sure it takes the \
+            form https://www.discogs.com/release/<release_id>"
         )

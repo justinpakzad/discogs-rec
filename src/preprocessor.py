@@ -3,6 +3,7 @@ from sklearn.impute import SimpleImputer
 from scipy.sparse import hstack, csr_matrix
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.decomposition import TruncatedSVD
+from pathlib import Path
 
 
 class PreProcessor:
@@ -53,7 +54,7 @@ class BuildFeatures:
     def __init__(self, features=None, n_components=150) -> None:
         # initialize preprocessor and svd to reduce dimensionality
         self.preprocessor = PreProcessor(features)
-        self.svd = TruncatedSVD(n_components=n_components)
+        self.n_components = n_components
 
     def process_features(self, df, features=None):
         cols_to_impute = [
@@ -82,5 +83,16 @@ class BuildFeatures:
         return features_stack
 
     def reduce_dimensionality(self, feature_matrix):
-        reduced_features = self.svd.fit_transform(feature_matrix)
+        # make sure default n_components does not exceed the number of features
+        # if it does, use the feature matrix shape
+        max_components = min(self.n_components, feature_matrix.shape[1] - 1)
+        svd = TruncatedSVD(n_components=max_components)
+        reduced_features = svd.fit_transform(feature_matrix)
         return reduced_features
+
+    def write_n_components(self, n_components):
+        # write the n_components to a txt file
+        # so that the annoy f parameter can be dynamically updated instead of a fixed 150
+        config_path = Path("/config")
+        with open(f"{config_path}/n_components.txt", "w") as f:
+            f.write(str(n_components))

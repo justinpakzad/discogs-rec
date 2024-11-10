@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from annoy import AnnoyIndex
 from pydantic import BaseModel
-from .utils import load_mappings
+from .utils import load_mappings, get_n_components
 from pathlib import Path
 
 
@@ -22,7 +22,7 @@ async def root():
 async def get_top_n_recommendations(request: RecRequest):
     ann_file = Path(__file__).resolve().parents[1] / "ann_files" / "discogs_rec.ann"
     mappings = load_mappings()
-    f = 150
+    f = get_n_components()
     t = AnnoyIndex(f, "angular")
     t.load(str(ann_file))
     release_id = int(request.url.split("release/")[-1].split("-")[0])
