@@ -5,6 +5,7 @@ Discogs Rec is a recommender system designed to enhance the Discogs digging expe
 - `src/`: Contains the source code for the creation of the Recommender System. This includes the preprocessing of the features used to build the model, generating the .ann file, and creating the mappings between release ids and artist/track titles.
 - `app/`: Contains the code for deploying and serving the Recommender System as a web application.
 - `config/`: Contains a txt file for dynamically updating the n_components parameter used for the annoy index.
+- `data/`: Directory for the training data (instructions on how to obtain that below)
 ## Setup
 1. In order to succesfully generate the Annoy Index you will need the actual dataset, which you can download [here](https://drive.google.com/file/d/1fxCiMm5rDNlEl7bxkLJS91ap3vBMLiOQ/view?usp=sharing). Once downloaded, place it in the `/data` directory. There are place holder txt files in the folders where data is getting written to, so you don't need to manually create and configure them. Feel free to delete them once you cloned the repository locally.
  
