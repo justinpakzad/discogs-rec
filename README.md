@@ -17,24 +17,24 @@ git clone https://github.com/justinpakzad/discogs-rec
 
 ## Docker Configuration
 
-The `docker-compose.yaml` file configures two main services: `discogs_rec` for pre processing the data, generating the Annoy index, and data mappings.`fast_api` for the API and Streamlit components.
+The `docker-compose.yaml` file configures two main services: `discogs_rec_model` for pre processing the data, generating the Annoy index, and data mappings.`discogs_rec_app` for the API and Streamlit components.
 
 Shared volumes are configured for directories like `app/mappings`, `app/ann_files`, and `src/data`, so that each service has access to necessary files without duplication.
 
 Please note, in order to run the discogs_rec container, you will need at least 8gb of RAM.
 ### Docker Commands for Building and Running Services Locally
 
-To build and run the `discogs_rec` and `fast_api` services with `docker-compose`, use the following commands:
+To build and run the `discogs_rec_model` and `discogs_rec_app` services with `docker-compose`, use the following commands:
 ```bash
-docker compose up --build discogs_rec
+docker compose up --build discogs_rec_model
 ```
 Or to specify a subset of features to be used:
 ```bash
-docker compose run --build discogs_rec python main.py --features avg_rating low median high countries styles
+docker compose run --build discogs_rec_model python main.py --features avg_rating low median high countries styles
 ```
 Once finished you can then run the fast_api services and get your recommendations using the following:
 ```bash
-docker compose up fast_api --build
+docker compose up discogs_rec_app --build
 ```
 
 

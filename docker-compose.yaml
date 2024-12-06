@@ -1,5 +1,5 @@
 services:
-  discogs_rec:
+  discogs_rec_model:
       build: src/
       volumes:
         - ./data:/data
@@ -10,7 +10,7 @@ services:
       environment:
         PYTHONPATH: /src
       command: ["python", "main.py"]
-  fast_api:
+  discogs_rec_app:
     build: app/
     ports:
       - "8000:8000"

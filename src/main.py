@@ -1,10 +1,11 @@
 import ast
 import pandas as pd
 import pickle
+import re
+import argparse
 from pathlib import Path
 from annoy import AnnoyIndex
 from preprocessor import BuildFeatures
-import argparse
 
 
 def approx_nearest_neighbor(matrix, file_name, f=150, n_trees=250):
@@ -17,7 +18,9 @@ def approx_nearest_neighbor(matrix, file_name, f=150, n_trees=250):
 
 
 def create_mappings(df):
-    df["artist_name"] = df["artist_name"].apply(lambda x: ast.literal_eval(x))
+    df["artist_name"] = df["artist_name"].apply(
+        lambda x: ast.literal_eval(re.sub(r"'\s+'", "', '", x))
+    )
     # build mappings for displaying artist/release on web app
     release_id_to_idx = {
         release_id: idx for idx, release_id in enumerate(df["release_id"])
@@ -29,7 +32,7 @@ def create_mappings(df):
         idx: release_title for idx, release_title in enumerate(df["release_title"])
     }
     release_id_to_artist = {
-        idx: ", ".join(artist) for idx, artist in enumerate(df["artist_name"])
+        idx: " / ".join(artist) for idx, artist in enumerate(df["artist_name"])
     }
     mappings = {
         "release_id_to_idx": release_id_to_idx,

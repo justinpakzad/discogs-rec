@@ -51,7 +51,7 @@ class PreProcessor:
 
 
 class BuildFeatures:
-    def __init__(self, features=None, n_components=150) -> None:
+    def __init__(self, features=None, n_components=200) -> None:
         # initialize preprocessor and svd to reduce dimensionality
         self.preprocessor = PreProcessor(features)
         self.n_components = n_components
