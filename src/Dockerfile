@@ -11,7 +11,7 @@ COPY requirements.txt /src/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY main.py /src/main.py
-COPY preprocessor.py /src/preprocessor.py
+COPY preprocessing.py /src/preprocessing.py
 
 
 CMD ["python" ,"main.py"]

@@ -5,7 +5,7 @@ import re
 import argparse
 from pathlib import Path
 from annoy import AnnoyIndex
-from preprocessor import BuildFeatures
+from preprocessing import *
 
 
 def approx_nearest_neighbor(matrix, file_name, f=150, n_trees=250):
@@ -69,17 +69,29 @@ def arg_parse():
 
 def main():
     data_path = Path("/data")  # mounted
-    config_path = Path("/config")  # mounted
     df = pd.read_csv(f"{data_path}/discogs_rec_dataset.csv")
     df_cleaned = df.drop_duplicates(
         subset=["release_title", "label_name", "release_year", "catno"], keep="first"
     )
+    df_cleaned[["release_id"]].to_csv(f"{data_path}/release_ids.csv", index=False)
     args = arg_parse()
-    feature_builder = BuildFeatures(features=args.features)
-    feature_matrix = feature_builder.process_features(df_cleaned, args.features)
-    reduced_features = feature_builder.reduce_dimensionality(feature_matrix)
+    cols_to_impute = [
+        "have",
+        "want",
+        "avg_rating",
+        "ratings",
+        "low",
+        "median",
+        "high",
+        "ratings",
+        "want_to_have_ratio",
+    ]
+    feature_matrix = process_all_features(
+        df=df_cleaned, columns=cols_to_impute, features=args.features
+    )
+    reduced_features = reduce_dimensionality(feature_matrix=feature_matrix)
     n_components = reduced_features.shape[1]
-    feature_builder.write_n_components(n_components)
+    write_n_components(n_components=n_components)
     mappings = create_mappings(df_cleaned)
     write_mappings(mappings)
     approx_nearest_neighbor(

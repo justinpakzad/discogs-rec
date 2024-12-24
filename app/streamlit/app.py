@@ -30,11 +30,14 @@ def fetch_recommendations(url):
 
 
 def display_recommendations(recs):
-    for rec in recs:
-        st.markdown(
-            f"<a href='{rec[2]}' class='custom-font'>{rec[0]} - {rec[1]}</a>",
-            unsafe_allow_html=True,
-        )
+    if not isinstance(recs, list):
+        st.error("Sorry, the release is not in the scope of our model")
+    else:
+        for rec in recs:
+            st.markdown(
+                f"<a href='{rec[2]}' class='custom-font'>{rec[0]} - {rec[1]}</a>",
+                unsafe_allow_html=True,
+            )
 
 
 def main():

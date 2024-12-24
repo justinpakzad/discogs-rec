@@ -12,6 +12,21 @@ t = None
 class RecRequest(BaseModel):
     url: str
     n_recs: int = 5
+    username: str = None
+
+
+class FeedbackRequest(BaseModel):
+    user_id: str
+    feedback: str
+    input_release_id: int
+    recommended_release_ids: list[int]
+    interaction_timestamp: str
+    location: dict = None
+    device: str = None
+    session_duration: int = None
+    recommendation_rank: int = None
+    would_recommend_to_friend: str = None
+    familiartiy: str = None
 
 
 def load_annoy_index():
@@ -28,6 +43,7 @@ def load_annoy_index():
 
 
 app.add_event_handler("startup", load_annoy_index)
+app.add_event_handler("startup", load_mappings)
 
 
 def extract_release_id(request):
@@ -36,10 +52,12 @@ def extract_release_id(request):
 
 
 def get_nearest_indices(item_index, t, request):
-    nearest_indices = t.get_nns_by_item(
-        item_index, n=request.n_recs + 25, include_distances=False
-    )
-    return nearest_indices
+    if item_index:
+        nearest_indices = t.get_nns_by_item(
+            item_index, n=request.n_recs + 25, include_distances=False
+        )
+        return nearest_indices
+    return None
 
 
 def get_n_nearest_recs(request, indices, mappings, release_id):
@@ -66,15 +84,23 @@ async def root():
 @app.post("/recommend")
 async def get_recommendations(request: RecRequest):
     global t
-    try:
-        mappings = load_mappings()
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, detail="Failed to load mappings/annoy index files"
-        )
+    mappings = load_mappings()
     release_id = extract_release_id(request)
+    if release_id is None:
+        raise HTTPException(status_code=400, detail="Invalid URL format")
     item_idx = mappings.get("release_id_to_idx").get(release_id)
+    if item_idx is None:
+        raise HTTPException(
+            status_code=404,
+            detail="This release is outside of the scope of our model",
+        )
     nearest_indices = get_nearest_indices(item_index=item_idx, t=t, request=request)
+    if nearest_indices is None:
+        raise HTTPException(
+            status_code=404,
+            detail="This release is outside of the scope of our model",
+        )
+
     recs = get_n_nearest_recs(
         indices=nearest_indices,
         mappings=mappings,
