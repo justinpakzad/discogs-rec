@@ -75,7 +75,6 @@ def main():
     df_cleaned = df.drop_duplicates(
         subset=["release_title", "label_name", "release_year", "catno"], keep="first"
     )
-    # df_cleaned[["release_id"]].to_csv(f"{data_path}/release_ids.csv", index=False)
     args = arg_parse()
     cols_to_impute = [
         "have",
