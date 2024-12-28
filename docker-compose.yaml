@@ -3,9 +3,6 @@ services:
       build: src/
       volumes:
         - ./data:/data
-        - ./config:/config
-        - ./app/mappings:/mappings
-        - ./app/ann_files:/ann_files
         - ./src:/src
       environment:
         PYTHONPATH: /src
@@ -16,10 +13,6 @@ services:
       - "8000:8000"
       - "8501:8501"
     volumes:
-      - ./app/fast_api:/app/fast_api
-      - ./app/streamlit:/app/streamlit
-      - ./app/mappings:/app/mappings
-      - ./config:/config
-      - ./app/ann_files:/app/ann_files
+      - ./data:/data
     environment:
       PYTHONPATH: /app

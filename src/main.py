@@ -8,18 +8,20 @@ from annoy import AnnoyIndex
 from preprocessing import *
 
 
-def approx_nearest_neighbor(matrix, file_name, f=150, n_trees=250):
+def approx_nearest_neighbor(matrix, file_name, f=150, n_trees=350):
     # creating annoy index
     t = AnnoyIndex(f, "angular")
     for i in range(matrix.shape[0]):
         t.add_item(i, matrix[i])
     t.build(n_trees)
-    t.save(f"/ann_files/{file_name}")
+    t.save(f"/data/ann_files/{file_name}")
 
 
 def create_mappings(df):
-    df["artist_name"] = df["artist_name"].apply(
-        lambda x: ast.literal_eval(re.sub(r"'\s+'", "', '", x))
+    df["artist_name"] = (
+        df["artist_name"]
+        .astype(str)
+        .apply(lambda x: ast.literal_eval(re.sub(r"'\s+'", "', '", x)))
     )
     # build mappings for displaying artist/release on web app
     release_id_to_idx = {
@@ -45,7 +47,7 @@ def create_mappings(df):
 
 def write_mappings(mappings):
     # mounted path
-    dirpath = Path("/mappings")
+    dirpath = Path("/data/mappings")
     dirpath.mkdir(exist_ok=True)
     for key, value in mappings.items():
         file_dest = dirpath / f"{key}.pkl"
@@ -69,11 +71,11 @@ def arg_parse():
 
 def main():
     data_path = Path("/data")  # mounted
-    df = pd.read_csv(f"{data_path}/discogs_rec_dataset.csv")
+    df = pd.read_parquet(f"{data_path}/training_data/discogs_dataset.parquet")
     df_cleaned = df.drop_duplicates(
         subset=["release_title", "label_name", "release_year", "catno"], keep="first"
     )
-    df_cleaned[["release_id"]].to_csv(f"{data_path}/release_ids.csv", index=False)
+    # df_cleaned[["release_id"]].to_csv(f"{data_path}/release_ids.csv", index=False)
     args = arg_parse()
     cols_to_impute = [
         "have",

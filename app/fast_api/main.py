@@ -3,6 +3,7 @@ from annoy import AnnoyIndex
 from pydantic import BaseModel
 from .utils import load_mappings, get_n_components
 from pathlib import Path
+import os
 
 app = FastAPI()
 
@@ -15,6 +16,7 @@ class RecRequest(BaseModel):
     username: str = None
 
 
+# Feedback endpoint is used to simulate user feedback (via faker script)
 class FeedbackRequest(BaseModel):
     user_id: str
     feedback: str
@@ -31,7 +33,8 @@ class FeedbackRequest(BaseModel):
 
 def load_annoy_index():
     global t
-    ann_file_path = Path("ann_files/discogs_rec.ann")
+    ann_file_path = Path("/data/ann_files/discogs_rec.ann")
+    print(os.getcwd())
     if not ann_file_path.exists():
         raise HTTPException(
             status_code=404,
@@ -79,6 +82,12 @@ def get_n_nearest_recs(request, indices, mappings, release_id):
 @app.get("/")
 async def root():
     return {"message": "Welcome to Discogs Recs"}
+
+
+@app.post("/feedback")
+async def get_feedback(request: FeedbackRequest):
+    feedback = request.model_dump()
+    return feedback
 
 
 @app.post("/recommend")

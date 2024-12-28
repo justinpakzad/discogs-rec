@@ -27,19 +27,15 @@ def scale_features(df):
 def one_hot_encode_features(df):
     ohe = OneHotEncoder()
     encoded_features = {
-        "countries": csr_matrix(ohe.fit_transform(df[["country"]])) * 0.4,
-        "formats": csr_matrix(ohe.fit_transform(df[["format"]])),
-        "year": csr_matrix(ohe.fit_transform(df[["release_year"]])) * 0.7,
+        "countries": csr_matrix(ohe.fit_transform(df[["country"]])) * 0.5,
+        "year": csr_matrix(ohe.fit_transform(df[["release_year"]])) * 0.8,
     }
     return encoded_features
 
 
 def ml_encode_features(df):
     mlb = MultiLabelBinarizer()
-    encoded_features = {
-        "styles": csr_matrix(mlb.fit_transform(df["styles"])),
-        "genre": csr_matrix(mlb.fit_transform(df["genre"])),
-    }
+    encoded_features = {"styles": csr_matrix(mlb.fit_transform(df["styles"]))}
     return encoded_features
 
 
@@ -60,7 +56,6 @@ def process_all_features(df, columns, features=None):
         if features
         else features_dict
     )
-    print(selected_features.keys())
     features_stacked = hstack([val for val in selected_features.values()])
     return features_stacked
 
@@ -77,6 +72,6 @@ def reduce_dimensionality(feature_matrix, n_components=200):
 def write_n_components(n_components):
     # write the n_components to a txt file
     # so that the annoy f parameter can be dynamically updated instead of a fixed 150
-    config_path = Path("/config")
+    config_path = Path("/data/config")
     with open(f"{config_path}/n_components.txt", "w") as f:
         f.write(str(n_components))
