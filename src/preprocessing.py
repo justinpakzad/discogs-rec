@@ -20,6 +20,7 @@ def scale_features(df):
         "high": scaler.fit_transform(df[["high"]]) * 0.4,
         "num_ratings": scaler.fit_transform(df[["ratings"]]) * 0.1,
         "video_count": scaler.fit_transform(df[["video_count"]]) * 0.1,
+        "n_styles": scaler.fit_transform(df[["n_styles"]]) * 0.1,
     }
     return scaled_features
 

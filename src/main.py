@@ -75,6 +75,7 @@ def main():
     df_cleaned = df.drop_duplicates(
         subset=["release_title", "label_name", "release_year", "catno"], keep="first"
     )
+    df_cleaned["n_styles"] = df_cleaned["styles"].apply(len)
     args = arg_parse()
     cols_to_impute = [
         "have",
