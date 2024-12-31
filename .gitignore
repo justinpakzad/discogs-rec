@@ -8,3 +8,4 @@ discogs_enriched_data/
 mappings_and_annfiles
 src/config
 test_files
+src/testing
