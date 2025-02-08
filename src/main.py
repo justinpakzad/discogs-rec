@@ -7,8 +7,11 @@ from pathlib import Path
 from annoy import AnnoyIndex
 from preprocessing import *
 
+import logging
+
 
 def approx_nearest_neighbor(matrix, file_name, f=150, n_trees=350):
+    logging.info("Generating Annoy Index...")
     # creating annoy index
     t = AnnoyIndex(f, "angular")
     for i in range(matrix.shape[0]):
@@ -18,6 +21,7 @@ def approx_nearest_neighbor(matrix, file_name, f=150, n_trees=350):
 
 
 def create_mappings(df):
+    logging.info("Creating mappings...")
     df["artist_name"] = (
         df["artist_name"]
         .astype(str)
@@ -77,6 +81,7 @@ def main():
     )
     df_cleaned["n_styles"] = df_cleaned["styles"].apply(len)
     args = arg_parse()
+
     cols_to_impute = [
         "have",
         "want",
@@ -85,7 +90,6 @@ def main():
         "low",
         "median",
         "high",
-        "ratings",
         "want_to_have_ratio",
     ]
     feature_matrix = process_all_features(

@@ -6,7 +6,7 @@ Discogs Rec is a recommender system designed to enhance the Discogs digging expe
 - `app/`: Contains the code for deploying and serving the Recommender System as a web application.
 - `data/`: Directory for the training data (instructions on how to obtain that below), annoy index, config, and mappings.
 ## Setup
-1. In order to succesfully generate the Annoy Index you will need the actual dataset, which you can download [here](https://drive.google.com/file/d/1PSkeZKG-qQU8SNw_McD4Qk2_p56sCoil/view?usp=sharing). Once the parquet file has been downloaded, place it in the `/data/training_data` directory. 
+1. In order to succesfully generate the Annoy Index you will need the actual dataset, which you can download [here](https://drive.google.com/file/d/1TAdQU8xTK-TiIk3_wGVndHkbokUsSgNS/view?usp=sharing). Once the parquet file has been downloaded, place it in the `/data/training_data` directory. 
  
 
 2. Clone the repository:
@@ -42,7 +42,7 @@ docker compose up discogs_rec_app --build
 
 
 ## Notes
-Feel free to experiment with the number of features used to generate the Annoy index file. I've experimented with using slightly fewer features and found it resulted in more random but interesting recommendations. You can also adjust the weight of the feature matrices for varied results in the `preprocessing.py` file. Lastly, tweaking the number of trees (`n_trees`) in the Annoy file can enhance recommendation accuracy at the cost of a larger `.ann` file and increased memory usage during queries, as found in `main.py`. If you are having issues running this locally due to a compute issue, consider lowering the number of trees. This is an ongoing project, I will be trying to add/update new features and fix any bugs that may appear along the way. 
+Feel free to experiment with the number of features used to generate the Annoy index file. I've experimented with using slightly fewer features and found it resulted in more random but interesting recommendations. You can also adjust the weight of the feature matrices for varied results in weights_dict which resides in the `preprocessing.py` file. Lastly, tweaking the number of trees (`n_trees`) in the Annoy file can enhance recommendation accuracy at the cost of a larger `.ann` file and increased memory usage during queries, as found in `main.py`. If you are having issues running this locally due to a compute issue, consider lowering the number of trees. This is an ongoing project, I will be trying to add/update new features and fix any bugs that may appear along the way. 
 
 
 

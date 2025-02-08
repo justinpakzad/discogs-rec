@@ -1,26 +1,36 @@
+import logging.config
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
 from scipy.sparse import hstack, csr_matrix
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.decomposition import TruncatedSVD
 from pathlib import Path
+import logging
+
+
+weights_dict = {
+    "want_to_have_ratio": 0.4,
+    "have": 0.4,
+    "want": 0.4,
+    "avg_rating": 0.4,
+    "low": 0.4,
+    "median": 0.4,
+    "high": 0.4,
+    "ratings": 0.1,
+    "video_count": 0.1,
+    "n_styles": 0.1,
+    "country": 0.5,
+    "release_year": 0.9,
+    "styles": 1.0,
+}
 
 
 def scale_features(df):
     scaler = StandardScaler()
     scaled_features = {
-        # giving less weight to specific feature matrices
-        # (e.g., to not only get recs that have the same rating,wants,haves,etc)
-        "want_to_have_ratio": scaler.fit_transform(df[["want_to_have_ratio"]]) * 0.4,
-        "have": scaler.fit_transform(df[["have"]]) * 0.4,
-        "want": scaler.fit_transform(df[["want"]]) * 0.4,
-        "avg_rating": scaler.fit_transform(df[["avg_rating"]]) * 0.4,
-        "low": scaler.fit_transform(df[["low"]]) * 0.4,
-        "median": scaler.fit_transform(df[["median"]]) * 0.4,
-        "high": scaler.fit_transform(df[["high"]]) * 0.4,
-        "num_ratings": scaler.fit_transform(df[["ratings"]]) * 0.1,
-        "video_count": scaler.fit_transform(df[["video_count"]]) * 0.1,
-        "n_styles": scaler.fit_transform(df[["n_styles"]]) * 0.1,
+        feature: scaler.fit_transform(df[[feature]]) * weights_dict.get(feature, 1)
+        for feature in weights_dict.keys()
+        if feature not in ["country", "release_year", "styles"]
     }
     return scaled_features
 
@@ -28,15 +38,21 @@ def scale_features(df):
 def one_hot_encode_features(df):
     ohe = OneHotEncoder()
     encoded_features = {
-        "countries": csr_matrix(ohe.fit_transform(df[["country"]])) * 0.5,
-        "year": csr_matrix(ohe.fit_transform(df[["release_year"]])) * 0.8,
+        "countries": csr_matrix(ohe.fit_transform(df[["country"]]))
+        * weights_dict.get("country", 1),
+        "year": csr_matrix(ohe.fit_transform(df[["release_year"]]))
+        * weights_dict.get("release_year", 1),
     }
     return encoded_features
 
 
 def ml_encode_features(df):
     mlb = MultiLabelBinarizer()
-    encoded_features = {"styles": csr_matrix(mlb.fit_transform(df["styles"]))}
+    encoded_features = {
+        "styles": csr_matrix(
+            mlb.fit_transform(df["styles"]) * weights_dict.get("styles", 1)
+        )
+    }
     return encoded_features
 
 
@@ -47,6 +63,7 @@ def fill_nulls(df, columns):
 
 
 def process_all_features(df, columns, features=None):
+    logging.info("Processing features.....")
     imputed_df = fill_nulls(df, columns)
     scaled_features = scale_features(imputed_df)
     ohe_features = one_hot_encode_features(imputed_df)
@@ -58,6 +75,7 @@ def process_all_features(df, columns, features=None):
         else features_dict
     )
     features_stacked = hstack([val for val in selected_features.values()])
+    logging.info("Features successfully processed.....")
     return features_stacked
 
 
